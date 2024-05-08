@@ -8,8 +8,8 @@ export default {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
+        "./node_modules/flowbite/**/*.js",
     ],
-
     theme: {
         extend: {
             fontFamily: {
@@ -17,6 +17,5 @@ export default {
             },
         },
     },
-
-    plugins: [forms],
+    plugins: [forms, require('flowbite/plugin')],
 };

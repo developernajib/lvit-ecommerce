@@ -10,7 +10,7 @@ use Auth;
 class AuthController extends Controller
 {
     public function show(){
-        return Inertia::render('AdminAuth/Login');
+        return Inertia::render('Admin/Auth/Login');
     }
 
     public function store(Request $request){
