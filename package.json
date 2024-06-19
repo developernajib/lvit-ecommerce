@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build && vite build --ssr"
+        "watch": "vite",
+        "build": "vite build && vite build --ssr",
+        "prod": "vite build && vite build --ssr"
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
@@ -19,8 +21,13 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "@headlessui/vue": "^1.7.16",
+        "@heroicons/vue": "^2.0.18",
+        "@vue-hero-icons/outline": "^1.7.2",
+        "@vue-hero-icons/solid": "^1.7.2",
         "element-plus": "^2.7.2",
         "flowbite": "^2.3.0",
+        "sweetalert2": "^11.10.8",
         "vue-sweetalert2": "^5.0.5"
     }
 }

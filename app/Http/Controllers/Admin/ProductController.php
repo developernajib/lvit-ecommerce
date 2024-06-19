@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ProductImage;
+use Illuminate\Support\Str;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Brand;
-use App\Models\Category;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -27,7 +29,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-
         $product = new Product;
         $product->title = $request->title;
         $product->price = $request->price;
@@ -48,7 +49,7 @@ class ProductController extends Controller
                 ]);
             }
         }
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('admin.products')->with('success', 'Product created successfully.');
     }
 
     public function update(Request $request, $id)
@@ -74,18 +75,19 @@ class ProductController extends Controller
             }
         }
         $product->update();
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
+        return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
     }
 
     public function deleteImage($id)
     {
         $image = ProductImage::where('id', $id)->delete();
-        return redirect()->route('admin.products.index')->with('success', 'Image deleted successfully.');
+        return redirect()->route('admin.products')->with('success', 'Image deleted successfully.');
     }
 
     public function destroy($id)
     {
+        dd($id);
         $product = Product::findOrFail($id)->delete();
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('admin.products')->with('success', 'Product deleted successfully.');
     }
 }

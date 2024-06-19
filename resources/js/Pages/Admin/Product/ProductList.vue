@@ -1,7 +1,7 @@
 <script setup>
 import { router, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue'
-// import { Plus } from '@element-plus/icons-vue'
+import { Plus } from '@element-plus/icons-vue'
 
 defineProps({
     products: Array
@@ -9,23 +9,15 @@ defineProps({
 
 const brands = usePage().props.brands;
 const categories = usePage().props.categories;
+
+
 const isAddProduct = ref(false);
 const editMode = ref(false);
 const dialogVisible = ref(false)
+
+//upload mulitpel images
 const productImages = ref([])
 const dialogImageUrl = ref('')
-
-// Modal data
-const id = ref('');
-const title = ref('')
-const price = ref('')
-const quantity = ref('')
-const description = ref('')
-const product_images = ref([])
-const published = ref('')
-const category_id = ref('')
-const brand_id = ref('')
-
 const handleFileChange = (file) => {
     console.log(file)
     productImages.value.push(file)
@@ -39,8 +31,23 @@ const handlePictureCardPreview = (file) => {
 const handleRemove = (file) => {
     console.log(file)
 }
+//prodct from data
+const id = ref('');
+const title = ref('')
+const price = ref('')
+const quantity = ref('')
+const description = ref('')
+const product_images = ref([])
+const published = ref('')
+const category_id = ref('')
+const brand_id = ref('')
+const inStock = ref('')
+//end
 
 const openEditModal = (product, index) => {
+
+    console.log(product, index);
+    //updatde data
     id.value = product.id;
     title.value = product.title;
     price.value = product.price;
@@ -53,22 +60,16 @@ const openEditModal = (product, index) => {
     editMode.value = true;
     isAddProduct.value = false
     dialogVisible.value = true
+
 }
 
 
-// open add modal 
+//open add modal 
 const openAddModal = () => {
     isAddProduct.value = true
     dialogVisible.value = true
     editMode.value = false;
-}
 
-// close the modal
-const handleClose = () => {
-    isAddProduct.value = false
-    dialogVisible.value = false
-    editMode.value = false;
-    resetFormData();
 }
 
 // add product method 
@@ -107,7 +108,7 @@ const AddProduct = async () => {
 
 }
 
-// reset product data
+//rest data after added
 const resetFormData = () => {
     id.value = '';
     title.value = '';
@@ -120,7 +121,8 @@ const resetFormData = () => {
 
 
 
-// delete signal product image 
+//delete sigal product image 
+
 const deleteImage = async (pimage, index) => {
     try {
         await router.delete('/admin/products/image/' + pimage.id, {
@@ -140,7 +142,7 @@ const deleteImage = async (pimage, index) => {
     }
 }
 
-// update product method
+//update product method
 const updateProduct = async () => {
     const formData = new FormData();
     formData.append('title', title.value);
@@ -156,7 +158,7 @@ const updateProduct = async () => {
     }
 
     try {
-        await router.post('products/update/' + id.value, formData, {
+        await router.post('/admin/products/update/' + id.value, formData, {
             onSuccess: (page) => {
                 dialogVisible.value = false;
                 resetFormData();
@@ -174,21 +176,21 @@ const updateProduct = async () => {
     }
 }
 
-// delete product method 
+// Delete product method 
 const deleteProduct = (product, index) => {
     Swal.fire({
         title: 'Are you Sure',
-        text: "This actions can't undo!",
+        text: "This actions cannot undo!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         cancelButtonText: 'no',
-        confirmButtonText: 'Yes, delete!'
+        confirmButtonText: 'yes, delete!'
     }).then((result) => {
         if (result.isConfirmed) {
             try {
-                router.delete('products/destroy/' + product.id, {
+                router.delete('/admin/products/destory/' + product.id, {
                     onSuccess: (page) => {
                         this.delete(product, index);
                         Swal.fire({
@@ -211,7 +213,7 @@ const deleteProduct = (product, index) => {
 <template>
     <section class="  p-3 sm:p-5">
         <!-- dialog for adding product or editing product -->
-        <el-dialog v-model="dialogVisible" :title="editMode ? 'Edit product' : 'Add Product'" width="50%"
+        <el-dialog v-model="dialogVisible" :title="editMode ? 'Edit product' : 'Add Product'" width="30%"
             :before-close="handleClose">
             <!-- form start -->
 
@@ -269,7 +271,9 @@ const deleteProduct = (product, index) => {
                         <textarea id="message" rows="4" v-model="description"
                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Leave a comment..."></textarea>
+
                     </div>
+
                 </div>
                 <!-- multiple images upload -->
                 <div class="grid  md:gap-6">
@@ -277,12 +281,14 @@ const deleteProduct = (product, index) => {
                         <el-upload v-model:file-list="productImages" list-type="picture-card" multiple
                             :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-change="handleFileChange">
                             <el-icon>
-                                <!-- <Plus /> -->
+                                <Plus />
                             </el-icon>
                         </el-upload>
 
                     </div>
                 </div>
+                <!-- end -->
+
                 <!-- list of images for selected product -->
                 <div class="flex flex-nowrap mb-8 ">
                     <div v-for="(pimage, index) in product_images" :key="pimage.id" class="relative w-32 h-32 ">
@@ -294,11 +300,25 @@ const deleteProduct = (product, index) => {
                         </span>
                     </div>
                 </div>
+
+                <!-- end -->
+
+
+
+
                 <button type="submit"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
             </form>
+
+            <!-- end -->
+
+
+
         </el-dialog>
+
+        <!-- end -->
         <div class="mx-auto max-w-screen-xl px-4 lg:px-12">
+            <!-- Start coding here -->
             <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
                 <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
                     <div class="w-full md:w-1/2">
@@ -445,7 +465,7 @@ const deleteProduct = (product, index) => {
                                 <td class="px-4 py-3">${{ product.price }}</td>
 
                                 <td class="px-4 py-3">
-                                    <span v-if="product.in_stock == 0"
+                                    <span v-if="product.inStock == 0"
                                         class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">inStock</span>
                                     <span v-else
                                         class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Out
@@ -551,8 +571,3 @@ const deleteProduct = (product, index) => {
         </div>
     </section>
 </template>
-<style>
-.el-dialog{
-    margin-top: 7vh !important;
-}
-</style>

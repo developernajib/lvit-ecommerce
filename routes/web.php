@@ -4,9 +4,15 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\{
+    DashboardController,
+    AuthController,
+    ProductController
+};
+use App\Http\Controllers\User\{
+    CartController,
+    ProductListController
+};
 
 Route::get('/', [UserController::class,'index'])->name('home');
 Route::get('/', function () {
@@ -40,9 +46,19 @@ Route::middleware(['redirectAdmin'])->prefix('admin')->name('admin.')->group(fun
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/products', [ProductController::class, 'index'])->name('products');
-    Route::post('/products/store',[ProductController::class,'store'])->name('admin.products.store');
-    Route::put('/products/update/{id}',[ProductController::class,'update'])->name('admin.products.update');
-    Route::delete('/products/image/{id}',[ProductController::class,'deleteImage'])->name('admin.products.image.delete');
-    Route::delete('/products/destroy/{id}',[ProductController::class,'destroy'])->name('admin.products.destroy');
+    Route::post('/products/store',[ProductController::class,'store'])->name('products.store');
+    Route::put('/products/update/{id}',[ProductController::class,'update'])->name('products.update');
+    Route::delete('/products/image/{id}',[ProductController::class,'deleteImage'])->name('products.image.delete');
+    Route::delete('/products/destroy/{id}',[ProductController::class,'destroy'])->name('products.destroy');
 });
 
+Route::prefix('cart')->controller(CartController::class)->group(function () {
+    Route::get('view','view')->name('cart.view');
+    Route::post('store/{product}','store')->name('cart.store');
+    Route::patch('update/{product}','update')->name('cart.update');
+    Route::delete('delete/{product}','delete')->name('cart.delete');
+});
+
+Route::prefix('products')->controller(ProductListController::class)->group(function ()  {
+    Route::get('/','index')->name('products.index');
+});
