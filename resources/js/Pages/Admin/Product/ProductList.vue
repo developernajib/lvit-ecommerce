@@ -119,6 +119,11 @@ const resetFormData = () => {
     dialogImageUrl.value = ''
 };
 
+const handleClose = () => {
+    dialogVisible.value = false;
+    resetFormData();
+}
+
 
 
 //delete sigal product image 
@@ -178,6 +183,7 @@ const updateProduct = async () => {
 
 // Delete product method 
 const deleteProduct = (product, index) => {
+
     Swal.fire({
         title: 'Are you Sure',
         text: "This actions cannot undo!",
@@ -186,13 +192,16 @@ const deleteProduct = (product, index) => {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         cancelButtonText: 'no',
-        confirmButtonText: 'yes, delete!'
+        confirmButtonText: 'Yes, delete!'
     }).then((result) => {
+        console.log(result)
         if (result.isConfirmed) {
             try {
-                router.delete('/admin/products/destory/' + product.id, {
+                console.log(result)
+                router.delete('products/destory/' + product.id, {
                     onSuccess: (page) => {
                         this.delete(product, index);
+                        console.log("done")
                         Swal.fire({
                             toast: true,
                             icon: "success",
@@ -465,8 +474,8 @@ const deleteProduct = (product, index) => {
                                 <td class="px-4 py-3">${{ product.price }}</td>
 
                                 <td class="px-4 py-3">
-                                    <span v-if="product.inStock == 0"
-                                        class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">inStock</span>
+                                    <span v-if="product.inStock > 0 || product.quantity > 0"
+                                        class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">In Stock</span>
                                     <span v-else
                                         class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Out
                                         of Stock</span>
